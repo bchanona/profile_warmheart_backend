@@ -1,33 +1,34 @@
 package domain
 
 type User struct {
-	User_id int `json:"id_usuario,omitempty"`
+	User_id int `json:"user_id,omitempty"`
 	Name string `json:"name"`
-	Subnames string `json:"subnames"`
+	Surnames string `json:"surnames"`
 	Email string `json:"email"`
 	Password string `json:"password"`
 	Premium bool `json:"premium"`
 	Device_id int `json:"device_id"`
 }
 
-type UpdateUser struct {
-	User_id int `json:"id_usuario,omitempty"`
-	Name string `json:"name"`
-	Subnames string `json:"subnames"`
-	Email string `json:"email"`
-	Device_id int `json:"device_id"`
+type UpdatePassword struct {
+	User_id int `json:"user_id,omitempty"`
+	Password string `json:"password"`
 }
 
 type Login struct {
-	User_id int `json:"id_usuario,omitempty"`
 	Email string `json:"email"`
 	Password string `json:"password"`
-	Premium bool `json:"premium"`
+}
+
+type GetByID struct {
+	User_id int `json:"user_id,omitempty"`
+	Name string `json:"name"`
+	Subnames string `json:"subnames"`
+	Password string `json:"password"`
+	Email string `json:"email"`
 }
 
 type UpdateStatus struct {
-	User_id int `json:"id_usuario,omitempty"`
-	Email string `json:"email"`
+	User_id int `json:"user_id,omitempty"`
 	Premium bool `json:"premium"`
-	Device_id int `json:"device_id"`
 }
