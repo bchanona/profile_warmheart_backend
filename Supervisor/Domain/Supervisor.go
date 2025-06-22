@@ -1,10 +1,12 @@
 package domain
 
-type SaveSupervisor struct {
-	Name     string `json:"supervisor_name"`
-	Surnames string `json:"supervisor_surname"`
-	Email    string `json:"supervisor_email"`
-	Password string `json:"supervisor_password"`
+type Supervisor struct {
+	Supervisor_id int    `json:"supervisor_id"`
+	Name          string `json:"supervisor_name"`
+	Surnames      string `json:"supervisor_surname"`
+	Email         string `json:"supervisor_email"`
+	Password      string `json:"supervisor_password"`
+	User_id       int    `json:"user_id"`
 }
 
 type UpdateSupervisor struct {
@@ -28,4 +30,8 @@ type GetUserBySupervisorID struct {
 	Name          string `json:"user_name"`
 	Email         string `json:"user_email"`
 	Premium       bool   `json:"user_premium"`
+}
+type UpdatePassword struct {
+	Supervisor_id int    `json:"supervisor_id"`
+	Password      string `json:"supervisor_password"`
 }

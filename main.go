@@ -1,12 +1,28 @@
 package main
 
-import "github.com/bchanona/profile_warmheart_backend/helpers"
+import (
+	supervisor "github.com/bchanona/profile_warmheart_backend/Supervisor/infrastructure/Dependences"
+	routeSupervisor "github.com/bchanona/profile_warmheart_backend/Supervisor/infrastructure/Routes"
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
-	db, _ := helpers.ConnectMySQL()
-	if db == nil {
-		panic("Error connecting to the database")
-	} else {
-		println("Successful connection to the database")
-	}
+	supervisor.Init()
+	defer supervisor.CloseDB()
+
+	r := gin.Default()
+	r.Use(func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Header("Access-Control-Allow-Headers", "Content-Type")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	})
+	routeSupervisor.Routes(r)
+	r.Run()
 }
