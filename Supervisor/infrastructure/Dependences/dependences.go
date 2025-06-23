@@ -34,3 +34,27 @@ func GetSaveSupervisorController() *controllers.SaveUserController {
 	caseSaveSupervisor := application.SaveSupervisor(&mySQL)
 	return controllers.NewSaveUserController(caseSaveSupervisor)
 }
+func GetGetByIDController() *controllers.GetByIdController {
+	caseGetByID := application.GetByID(&mySQL)
+	return controllers.NewGetByIdProductController(caseGetByID)
+}
+func GetGetSupervisorByUserByIDController() *controllers.GetSupervisorByUserIdController {
+	caseGetSupervisorByUserID := application.NewGetSupervisorByUserIDUseCase(&mySQL)
+	return controllers.NewGetSupervisorByUserIdController(caseGetSupervisorByUserID)
+}
+func GetGetUserBySupervisorIDController() *controllers.GetUserBySupervisorIDController {
+	caseGetUserBySupervisorID := application.NewGetUserBySupervisorIDUseCase(&mySQL)
+	return controllers.NewGetUserBySupervisorIDController(caseGetUserBySupervisorID)
+}
+func GetUpdateSupervisorController() *controllers.UpdateSupervisorController {
+	caseUpdateSupervisor := application.NewUpdateSupervisorUseCase(&mySQL)
+	return controllers.NewUpdateSupervisorController(caseUpdateSupervisor)
+}
+func GetUpdatePasswordController() *controllers.UpdatePasswordController {
+	caseUpdatePassword := application.NewUpdateSupervisorPasswordUseCase(&mySQL)
+	return controllers.NewUpdatePasswordController(caseUpdatePassword)
+}
+func GetDeleteSupervisorController() *controllers.DeleteSupervisorController {
+	caseDeleteSupervisor := application.NewDeleteSupervisorUseCase(&mySQL)
+	return controllers.NewDeleteSupervisorController(caseDeleteSupervisor)
+}
