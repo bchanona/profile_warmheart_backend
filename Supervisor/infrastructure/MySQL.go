@@ -21,7 +21,7 @@ func NewMySQLRepository(db *sql.DB) *MySQLRepository {
 
 func (r *MySQLRepository) Save(supervisor domain.Supervisor) error {
 	// Verifica si el supervisor ya existe
-	existingUser, err := r.GetByEmail(supervisor.Email)
+	existingUser, err := r.GetSupervisorByEmail(supervisor.Email)
 	if err == nil && existingUser.User_id != 0 {
 		return domain.ErrSupervisorAlreadyExists
 	}
@@ -56,33 +56,7 @@ func (r *MySQLRepository) Save(supervisor domain.Supervisor) error {
 
 	return nil
 }
-func (r *MySQLRepository) GetByEmail(email string) (domain.Supervisor, error) {
-	var supervisor domain.Supervisor
 
-	query := `SELECT id, name, surnames, email, password, user_id 
-	          FROM SUPERVISORS WHERE email = ? LIMIT 1`
-
-	row := r.db.QueryRow(query, email)
-	err := row.Scan(
-		&supervisor.Supervisor_id,
-		&supervisor.Name,
-		&supervisor.Surnames,
-		&supervisor.Email,
-		&supervisor.Password,
-		&supervisor.User_id,
-	)
-
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			// Email no existe — válido para hacer inserción
-			return domain.Supervisor{}, sql.ErrNoRows
-		}
-		// Error inesperado
-		return domain.Supervisor{}, err
-	}
-
-	return supervisor, nil
-}
 func (r *MySQLRepository) Delete(id int) error {
 	return errors.New("not implemented yet")
 }
