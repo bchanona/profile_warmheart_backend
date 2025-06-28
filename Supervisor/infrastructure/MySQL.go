@@ -189,9 +189,10 @@ func (r *MySQLRepository) UpdateSupervisorPassword(id int, data domain.UpdatePas
 
 	return nil
 }
-func (r *MySQLRepository) DeleteSupervisor(id int) error {
-	query := `DELETE FROM SUPERVISORS WHERE supervisor_id = ?`
-	result, err := r.db.Exec(query, id)
+func (r *MySQLRepository) DeleteSupervisor(supervisorID int, userID int) error {
+	query := `DELETE FROM supervisors WHERE supervisor_id = ? AND user_id = ?`
+
+	result, err := r.db.Exec(query, supervisorID, userID)
 	if err != nil {
 		return err
 	}
@@ -205,4 +206,24 @@ func (r *MySQLRepository) DeleteSupervisor(id int) error {
 	}
 
 	return nil
+}
+func (sql *MySQLRepository) LoginSupervisors(email string, password string) (domain.Supervisor, error) {
+	var supervisor domain.Supervisor
+	var hashedPassword string
+
+	query := "SELECT supervisor_id, name, surnames, email, password, user_id FROM supervisors WHERE email = ?"
+
+	err := sql.db.QueryRow(query, email).Scan(&supervisor.Supervisor_id, &supervisor.Name, &supervisor.Surnames, &supervisor.Email, &hashedPassword, &supervisor.User_id)
+	if err != nil {
+		return domain.Supervisor{}, fmt.Errorf("error al buscar supervisor: %w", err)
+
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	if err != nil {
+		return domain.Supervisor{}, errors.New("contraseña incorrecta")
+	}
+
+	supervisor.Password = ""
+	return supervisor, nil
 }

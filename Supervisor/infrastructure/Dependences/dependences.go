@@ -58,3 +58,7 @@ func GetDeleteSupervisorController() *controllers.DeleteSupervisorController {
 	caseDeleteSupervisor := application.NewDeleteSupervisorUseCase(&mySQL)
 	return controllers.NewDeleteSupervisorController(caseDeleteSupervisor)
 }
+func GetLoginController() *controllers.LogInController {
+	caseLoginSupervisor := application.NewLoginUseCase(&mySQL)
+	return controllers.NewLogInController(caseLoginSupervisor)
+}

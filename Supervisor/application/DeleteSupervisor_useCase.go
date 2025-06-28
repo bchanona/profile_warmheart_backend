@@ -10,6 +10,6 @@ func NewDeleteSupervisorUseCase(repo domain.UserRepository) *DeleteSupervisorUse
 	return &DeleteSupervisorUseCase{repo: repo}
 }
 
-func (uc *DeleteSupervisorUseCase) Execute(id int) error {
-	return uc.repo.DeleteSupervisor(id)
+func (uc *DeleteSupervisorUseCase) Execute(supervisorID, userID int) error {
+	return uc.repo.DeleteSupervisor(supervisorID, userID)
 }

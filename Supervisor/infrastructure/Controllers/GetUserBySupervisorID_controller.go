@@ -3,7 +3,6 @@ package controllers
 import (
 	"errors"
 	"net/http"
-	"strconv"
 
 	domain "github.com/bchanona/profile_warmheart_backend/Supervisor/Domain"
 	"github.com/bchanona/profile_warmheart_backend/Supervisor/application"
@@ -19,12 +18,12 @@ func NewGetUserBySupervisorIDController(useCase *application.GetUserBySupervisor
 }
 
 func (c *GetUserBySupervisorIDController) Execute(ctx *gin.Context) {
-	idParam := ctx.Param("id")
-	supervisorID, err := strconv.Atoi(idParam)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid supervisor ID"})
+	idRaw, exists := ctx.Get("supervisor_id")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "token inválido"})
 		return
 	}
+	supervisorID := idRaw.(int)
 
 	user, err := c.useCase.Execute(int32(supervisorID))
 	if err != nil {

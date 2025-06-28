@@ -14,7 +14,7 @@ var jwtSupervisorKey = []byte(os.Getenv("JWT_SUPERVISOR_SECRET"))
 
 // Claims específicos para el supervisor
 type SupervisorClaims struct {
-	Supervisor_id int `json:"supervisor_idr"`
+	Supervisor_id int `json:"supervisor_id"`
 	User_id       int `json:"user_id"`
 	jwt.StandardClaims
 }

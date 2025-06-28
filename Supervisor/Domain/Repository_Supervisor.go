@@ -20,5 +20,6 @@ type UserRepository interface { //luego añado los gets
 	UpdateSupervisor(id int, data UpdateSupervisor) error
 	GetSupervisorByEmail(email string) (Supervisor, error)
 	UpdateSupervisorPassword(id int, data UpdatePassword) error
-	DeleteSupervisor(id int) error
+	DeleteSupervisor(supervisorID int, userID int) error
+	LoginSupervisors(emmail string, password string) (Supervisor, error)
 }

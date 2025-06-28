@@ -17,21 +17,31 @@ func NewSaveUserController(CreateuseCase *application.SaveSupervisorUseCase) *Sa
 }
 
 func (c *SaveUserController) Execute(ctx *gin.Context) {
+	userIDRaw, exists := ctx.Get("user_id")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "token inválido"})
+		return
+	}
+	userID := userIDRaw.(int)
+
 	var supervisor domain.Supervisor
 	if err := ctx.ShouldBindJSON(&supervisor); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request data"})
 		return
 	}
 
+	// Sobrescribimos cualquier user_id malicioso
+	supervisor.User_id = userID
+
 	err := c.CreateUseCase.Execute(supervisor)
 	if err != nil {
 		if err == domain.ErrSupervisorAlreadyExists {
 			ctx.JSON(http.StatusConflict, gin.H{"error": "email already registered"})
 		} else {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "could not register user"})
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "could not register supervisor"})
 		}
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"message": "user registered successfully"})
+	ctx.JSON(http.StatusCreated, gin.H{"message": "supervisor registered successfully"})
 }

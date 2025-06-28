@@ -18,19 +18,30 @@ func NewGetByIdProductController(useCaseGetById *application.GetByIDUseCase) *Ge
 	return &GetByIdController{useCaseGetById: useCaseGetById}
 }
 
-func (getByIdSupervisor *GetByIdController) Execute(ctx *gin.Context) {
-	idParam := ctx.Param("id")
-	id, err := strconv.Atoi(idParam)
-
+func (c *GetByIdController) Execute(ctx *gin.Context) {
+	supervisorIDParam := ctx.Param("id")
+	supervisorID, err := strconv.Atoi(supervisorIDParam)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "id invalid"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid supervisor ID"})
 		return
 	}
 
-	//long polling
-	initialSupervisor, err := getByIdSupervisor.useCaseGetById.Execute(int32(id))
+	userIDRaw, exists := ctx.Get("user_id")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "token inválido"})
+		return
+	}
+	userID := userIDRaw.(int)
+
+	initialSupervisor, err := c.useCaseGetById.Execute(int32(supervisorID))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Validación de pertenencia
+	if initialSupervisor.User_id != userID {
+		ctx.JSON(http.StatusForbidden, gin.H{"error": "not authorized to view this supervisor"})
 		return
 	}
 
@@ -40,7 +51,7 @@ func (getByIdSupervisor *GetByIdController) Execute(ctx *gin.Context) {
 	go func() {
 		for {
 			time.Sleep(2 * time.Second)
-			updatedSupervisor, err := getByIdSupervisor.useCaseGetById.Execute(int32(id))
+			updatedSupervisor, err := c.useCaseGetById.Execute(int32(supervisorID))
 			if err != nil {
 				continue
 			}
