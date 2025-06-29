@@ -13,8 +13,7 @@ type UserRepository interface {
     Save(user User) error
     GetByEmail(email string) (User, error)
     GetByID(id int) (User, error)
-    Update(user User) error
-    UpdatePassword(id int, newPassword string) error
+    GetAll() ([]User, error)
     UpdateStatus(id int, premium bool) error
     Delete(id int) error
 }

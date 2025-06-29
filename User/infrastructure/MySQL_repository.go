@@ -18,7 +18,6 @@ func NewMySQLRepository(db *sql.DB) *MySQLRepository {
 }
 
 func (r *MySQLRepository) Save(user domain.User) error {
-    // Verifica si el usuario ya existe
     existingUser, err := r.GetByEmail(user.Email)
     if err == nil && existingUser.User_id != 0 {
         return domain.ErrUserAlreadyExists
@@ -30,9 +29,9 @@ func (r *MySQLRepository) Save(user domain.User) error {
         return err
     }
 
-    query := `INSERT INTO usuario 
-        (nombre, apellidos, correo, password, premium, id_dispositivo) 
-        VALUES (?, ?, ?, ?, ?, ?)`
+    query := `INSERT INTO USERS 
+        (user_id, name, surnames, email, password, premium, device_id) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)`
 
     _, err = r.db.Exec(query, 
         user.Name, 
@@ -51,8 +50,8 @@ func (r *MySQLRepository) Save(user domain.User) error {
 
 func (r *MySQLRepository) GetByEmail(email string) (domain.User, error) {
     var user domain.User
-    query := `SELECT user_id, nombre, apellidos, correo, password, premium, id_dispositivo 
-              FROM usuario WHERE correo = ?`
+    query := `SELECT user_id, name, surnames, email, password, premium, device_id 
+              FROM USERS WHERE email = ?`
     
     err := r.db.QueryRow(query, email).Scan(
         &user.User_id,
@@ -76,8 +75,8 @@ func (r *MySQLRepository) GetByEmail(email string) (domain.User, error) {
 
 func (r *MySQLRepository) GetByID(id int) (domain.User, error) {
     var user domain.User
-    query := `SELECT user_id, nombre, apellidos, correo, password, premium, id_dispositivo
-              FROM usuario WHERE user_id = ?`
+    query := `SELECT user_id, name, surnames, email, password, premium, device_id
+              FROM USERS WHERE user_id = ?`
 
     err := r.db.QueryRow(query, id).Scan(
         &user.User_id,
@@ -98,19 +97,54 @@ func (r *MySQLRepository) GetByID(id int) (domain.User, error) {
     return user, nil
 }
 
+func (r *MySQLRepository) GetAll() ([]domain.User, error) {
+    query := `SELECT user_id, name, surnames, email, premium, device_id FROM USERS`
+    rows, err := r.db.Query(query)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
 
-func (r *MySQLRepository) Update(user domain.User) error {
-    return nil 
-}
+    var users []domain.User
+    for rows.Next() {
+        var user domain.User
+        err := rows.Scan(
+            &user.User_id,
+            &user.Name,
+            &user.Surnames,
+            &user.Email,
+            &user.Premium,
+            &user.Device_id,
+        )
+        if err != nil {
+            return nil, err
+        }
+        users = append(users, user)
+    }
 
-func (r *MySQLRepository) UpdatePassword(id int, newPassword string) error {
-    return nil 
+    return users, nil
 }
 
 func (r *MySQLRepository) UpdateStatus(id int, premium bool) error {
-    return nil 
+    query := `UPDATE USERS SET premium = ? WHERE user_id = ?`
+    _, err := r.db.Exec(query, premium, id)
+    if err != nil {
+        if err == sql.ErrNoRows {
+            return domain.ErrUserNotFound
+        }
+        return err
+    }
+    return nil
 }
 
 func (r *MySQLRepository) Delete(id int) error {
+    query := `DELETE FROM USERS WHERE user_id = ?`
+    _, err := r.db.Exec(query, id)
+    if err != nil {
+        if err == sql.ErrNoRows {
+            return domain.ErrUserNotFound
+        }
+        return err
+    }
     return nil
 }
