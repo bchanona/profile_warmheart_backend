@@ -30,8 +30,8 @@ func (r *MySQLRepository) Save(user domain.User) error {
     }
 
     query := `INSERT INTO USERS 
-        (user_id, name, surnames, email, password, premium, device_id) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)`
+        (name, surnames, email, password, premium, device_id) 
+        VALUES (?, ?, ?, ?, ?, ?)`
 
     _, err = r.db.Exec(query, 
         user.Name, 
