@@ -1,12 +1,13 @@
 package controllers
 
 import (
-    "net/http"
-    "time"
-    "github.com/bchanona/profile_warmheart_backend/User/application"
-    "github.com/bchanona/profile_warmheart_backend/User/domain"
-    "github.com/dgrijalva/jwt-go"
-    "github.com/gin-gonic/gin"
+	"net/http"
+	"time"
+
+	"github.com/bchanona/profile_warmheart_backend/User/application"
+	"github.com/bchanona/profile_warmheart_backend/User/domain"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
 type LoginUserController struct {
@@ -16,6 +17,11 @@ type LoginUserController struct {
 
 func NewLoginUserController(useCase *application.LoginUserUseCase, jwtKey []byte) *LoginUserController {
     return &LoginUserController{UseCase: useCase, JWTKey: jwtKey}
+}
+
+type Claims struct {
+	User_id int `json:"user_id"`
+	jwt.StandardClaims
 }
 
 func (ctrl *LoginUserController) Login(c *gin.Context) {
@@ -33,13 +39,12 @@ func (ctrl *LoginUserController) Login(c *gin.Context) {
 
     // Create JWT token
     expirationTime := time.Now().Add(24 * time.Hour)
-    claims := &domain.Claims{
+    claims := &Claims{
         User_id: user.User_id,
         StandardClaims: jwt.StandardClaims{
             ExpiresAt: expirationTime.Unix(),
         },
     }
-
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
     tokenString, err := token.SignedString(ctrl.JWTKey)
     if err != nil {

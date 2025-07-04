@@ -29,5 +29,5 @@ func main() {
 		dependencies.GetJWTKey(),
 	)
 
-	router.Run(":8000")
+	router.Run(":8081")
 }
