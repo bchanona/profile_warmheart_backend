@@ -16,7 +16,7 @@ func Routes(router *gin.Engine) {
 	UpdatePassword := dependences.GetUpdatePasswordController().Execute
 	DeleteSupervisor := dependences.GetDeleteSupervisorController().Execute
 	LoginSupevisor := dependences.GetLoginController().Execute
-	routes.POST("/", middlewares.AuthSupervisorMiddleware(), SaveSupervisor)                 //user_Id
+	routes.POST("/", middlewares.AuthMiddleware(), SaveSupervisor)                           //user_Id
 	routes.GET("/:id", middlewares.AuthSupervisorMiddleware(), GetById)                      //se usa user_Id/ va a traer todo el json del supervisor pero los campos de contraseña y user_id estaran vacios
 	routes.GET("/viewByUser", middlewares.AuthSupervisorMiddleware(), GetSupervisorByUserID) //user_Id
 	routes.GET("/viewUser", middlewares.AuthSupervisorMiddleware(), GetUserBySupervisorID)   //supervisor_Id

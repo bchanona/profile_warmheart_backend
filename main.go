@@ -3,10 +3,13 @@ package main
 import (
 	supervisor "github.com/bchanona/profile_warmheart_backend/Supervisor/infrastructure/Dependences"
 	routeSupervisor "github.com/bchanona/profile_warmheart_backend/Supervisor/infrastructure/Routes"
+	user "github.com/bchanona/profile_warmheart_backend/User/infrastructure/dependencies"
+	"github.com/bchanona/profile_warmheart_backend/User/infrastructure/routes"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	user.Init()
 	supervisor.Init()
 	defer supervisor.CloseDB()
 
@@ -23,6 +26,16 @@ func main() {
 
 		c.Next()
 	})
+	routes.SetupUserRoutes(
+		r,
+		user.CreateUserController(),
+		user.LoginUserController(),
+		user.GetAllUsersController(),
+		user.GetUserByIDController(),
+		user.UpdateStatusController(),
+		user.DeleteUserController(),
+		user.GetJWTKey(),
+	)
 	routeSupervisor.Routes(r)
 	r.Run(":8081")
 }
