@@ -3,14 +3,13 @@ package middlewares
 import (
 	"log"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
-var jwtKey = []byte(os.Getenv("JWT_SECRET_KEY"))
+var jwtKey = []byte("la clave va aqui")
 
 type Claims struct {
 	User_id int `json:"user_id"`
