@@ -190,7 +190,7 @@ func (r *MySQLRepository) UpdateSupervisorPassword(id int, data domain.UpdatePas
 	return nil
 }
 func (r *MySQLRepository) DeleteSupervisor(supervisorID int, userID int) error {
-	query := `DELETE FROM supervisors WHERE supervisor_id = ? AND user_id = ?`
+	query := `DELETE FROM SUPERVISORS WHERE supervisor_id = ? AND user_id = ?`
 
 	result, err := r.db.Exec(query, supervisorID, userID)
 	if err != nil {
@@ -211,7 +211,7 @@ func (sql *MySQLRepository) LoginSupervisors(email string, password string) (dom
 	var supervisor domain.Supervisor
 	var hashedPassword string
 
-	query := "SELECT supervisor_id, name, surnames, email, password, user_id FROM supervisors WHERE email = ?"
+	query := "SELECT supervisor_id, name, surnames, email, password, user_id FROM SUPERVISORS WHERE email = ?"
 
 	err := sql.db.QueryRow(query, email).Scan(&supervisor.Supervisor_id, &supervisor.Name, &supervisor.Surnames, &supervisor.Email, &hashedPassword, &supervisor.User_id)
 	if err != nil {

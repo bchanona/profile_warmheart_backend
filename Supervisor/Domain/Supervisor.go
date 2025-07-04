@@ -9,6 +9,13 @@ type Supervisor struct {
 	User_id       int    `json:"user_id"`
 }
 
+type CreateSupervisorRequest struct {
+	Name     string `json:"supervisor_name"`
+	Surnames string `json:"supervisor_surname"`
+	Email    string `json:"supervisor_email"`
+	Password string `json:"supervisor_password"`
+}
+
 type UpdateSupervisor struct {
 	Name     string `json:"supervisor_name"`
 	Surnames string `json:"supervisor_surname"`
