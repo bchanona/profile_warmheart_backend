@@ -1,14 +1,28 @@
 package main
 
 import (
+	userDependencies "github.com/bchanona/profile_warmheart_backend/User/infrastructure/dependencies"
+	userRoutes "github.com/bchanona/profile_warmheart_backend/User/infrastructure/routes"
+	"github.com/bchanona/profile_warmheart_backend/helpers"
 	supervisor "github.com/bchanona/profile_warmheart_backend/Supervisor/infrastructure/Dependences"
 	routeSupervisor "github.com/bchanona/profile_warmheart_backend/Supervisor/infrastructure/Routes"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	supervisor.Init()
-	defer supervisor.CloseDB()
+
+	db, _ := helpers.ConnectMySQL()
+	if db == nil {
+		panic("Error connecting to the database")
+	} else {
+		println("Successful connection to the database")
+	}
+
+	userDependencies.Init()
+  supervisor.Init()
+  defer supervisor.CloseDB()
+  
+
 
 	r := gin.Default()
 	r.Use(func(c *gin.Context) {
@@ -24,5 +38,16 @@ func main() {
 		c.Next()
 	})
 	routeSupervisor.Routes(r)
+  userRoutes.SetupUserRoutes(
+		r,
+		userDependencies.CreateUserController(),
+		userDependencies.LoginUserController(),
+		userDependencies.GetAllUsersController(),
+		userDependencies.GetUserByIDController(),
+		userDependencies.UpdateStatusController(),
+		userDependencies.DeleteUserController(),
+		userDependencies.GetJWTKey(),
+	)
 	r.Run(":8081")
+
 }
