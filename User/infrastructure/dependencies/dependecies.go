@@ -11,13 +11,13 @@ import (
 )
 
 var (
-	createUserUseCase     *application.SaveUserUseCase
-	loginUserUseCase      *application.LoginUserUseCase
-	getAllUsersUseCase    *application.GetAllUsersUseCase
-	getUserByIDUseCase    *application.GetByIDUserUseCase
-	updateStatusUseCase   *application.UpdateStatusUseCase
-	deleteUserUseCase     *application.DeleteUserUseCase
-	jwtKey                []byte
+	createUserUseCase   *application.SaveUserUseCase
+	loginUserUseCase    *application.LoginUserUseCase
+	getAllUsersUseCase  *application.GetAllUsersUseCase
+	getUserByIDUseCase  *application.GetByIDUserUseCase
+	updateStatusUseCase *application.UpdateStatusUseCase
+	deleteUserUseCase   *application.DeleteUserUseCase
+	jwtKey              []byte
 )
 
 func Init() {
