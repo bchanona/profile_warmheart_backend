@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/bchanona/profile_warmheart_backend/User/infrastructure/dependencies"
-	"github.com/bchanona/profile_warmheart_backend/User/infrastructure/routes"
+	userDependencies "github.com/bchanona/profile_warmheart_backend/User/infrastructure/dependencies"
+	userRoutes "github.com/bchanona/profile_warmheart_backend/User/infrastructure/routes"
 	"github.com/bchanona/profile_warmheart_backend/helpers"
 	"github.com/gin-gonic/gin"
 )
@@ -15,18 +15,18 @@ func main() {
 		println("Successful connection to the database")
 	}
 
-	dependencies.Init()
+	userDependencies.Init()
 	router := gin.Default()
 
-	routes.SetupUserRoutes(
+	userRoutes.SetupUserRoutes(
 		router,
-		dependencies.CreateUserController(),
-		dependencies.LoginUserController(),
-		dependencies.GetAllUsersController(),
-		dependencies.GetUserByIDController(),
-		dependencies.UpdateStatusController(),
-		dependencies.DeleteUserController(),
-		dependencies.GetJWTKey(),
+		userDependencies.CreateUserController(),
+		userDependencies.LoginUserController(),
+		userDependencies.GetAllUsersController(),
+		userDependencies.GetUserByIDController(),
+		userDependencies.UpdateStatusController(),
+		userDependencies.DeleteUserController(),
+		userDependencies.GetJWTKey(),
 	)
 
 	router.Run(":8081")
