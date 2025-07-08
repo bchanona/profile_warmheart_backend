@@ -3,13 +3,14 @@ package domain
 import "errors"
 
 var (
-	ErrSupervisorAlreadyExists = errors.New("supervisor already exists")
-	ErrSupervisorNotFound      = errors.New("supervisor not found")
-	ErrInvalidCredentials      = errors.New("invalid credentials")
-	ErrInvalidInput            = errors.New("select all imput")
-	ErrNoSupervisorsFound      = errors.New("no supervisors found for the given user ID")
-	ErrUserNotFound            = errors.New("user not found for given supervisor ID")
-	ErrEmailAlreadyExists      = errors.New("email already in use")
+	ErrSupervisorAlreadyExists    = errors.New("supervisor already exists")
+	ErrSupervisorNotFound         = errors.New("supervisor not found")
+	ErrInvalidCredentials         = errors.New("invalid credentials")
+	ErrInvalidInput               = errors.New("select all imput")
+	ErrNoSupervisorsFound         = errors.New("no supervisors found for the given user ID")
+	ErrUserNotFound               = errors.New("user not found for given supervisor ID")
+	ErrEmailAlreadyExists         = errors.New("email already in use")
+	ErrUserReachedSupervisorLimit = errors.New("non-premium users can only have one supervisor")
 )
 
 type UserRepository interface { //luego añado los gets

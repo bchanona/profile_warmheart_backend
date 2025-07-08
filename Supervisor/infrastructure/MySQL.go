@@ -20,18 +20,37 @@ func NewMySQLRepository(db *sql.DB) *MySQLRepository {
 }
 
 func (r *MySQLRepository) Save(supervisor domain.Supervisor) error {
-	// Verifica si el supervisor ya existe
 	existingUser, err := r.GetSupervisorByEmail(supervisor.Email)
 	if err == nil && existingUser.User_id != 0 {
 		return domain.ErrSupervisorAlreadyExists
 	}
 
-	// Encripta contraseña
+	var isPremium bool
+	err = r.db.QueryRow("SELECT premium FROM USERS WHERE user_id = ?", supervisor.User_id).Scan(&isPremium)
+	if err != nil {
+		log.Println("Error al verificar si el usuario es premium:", err)
+		return err
+	}
+
+	if !isPremium {
+		var count int
+		err = r.db.QueryRow("SELECT COUNT(*) FROM SUPERVISORS WHERE user_id = ?", supervisor.User_id).Scan(&count)
+		if err != nil {
+			log.Println("Error al contar supervisores del usuario:", err)
+			return err
+		}
+		if count >= 1 {
+			return domain.ErrUserReachedSupervisorLimit
+		}
+	}
+
+	// Encriptar la contraseña
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(supervisor.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 
+	// Insertar el supervisor
 	query := `INSERT INTO SUPERVISORS
 		(name, surnames, email, password, user_id) 
 		VALUES (?, ?, ?, ?, ?)`
@@ -45,9 +64,7 @@ func (r *MySQLRepository) Save(supervisor domain.Supervisor) error {
 	)
 
 	if err != nil {
-		// Validar si el error fue por email duplicado (clave única)
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok && mysqlErr.Number == 1062 {
-			// 1062 = Duplicate entry
 			return domain.ErrSupervisorAlreadyExists
 		}
 		log.Println("Error saving supervisor:", err)
