@@ -41,3 +41,17 @@ type DeviceData struct {
 	IdDevice int `json:"device_id"`
 	IdUser   int `json:"user_id"`
 }
+
+type SaveNotifications struct {
+	User_id     int    `json:"user_id"`
+	BodyMessage string `json:"body"`
+	Reading     bool   `json:"reading"`
+}
+
+type GetNotifications struct {
+	User_id     int    `json:"user_id"`
+	BodyMessage string `json:"body"`
+	Reading     bool   `json:"reading"`
+	Date        string `json:"date"`
+	Time        string `json:"time"`
+}

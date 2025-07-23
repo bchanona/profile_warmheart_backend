@@ -9,18 +9,21 @@ import (
 func SetupUserRoutes(router *gin.Engine, createUserCtrl *controllers.SaveUserController, 
     loginUserCtrl *controllers.LoginUserController, getAllUsersCtrl *controllers.GetAllUsersController,
     getByIDUserCtrl *controllers.GetByIDUserController, updateStatusCtrl *controllers.UpdateStatusController,
-    deleteUserCtrl *controllers.DeleteUserController, jwtKey []byte) {
+    deleteUserCtrl *controllers.DeleteUserController,saveNotification *controllers.SaveNotificationController,
+    getNotification *controllers.GetNotificationController, jwtKey []byte) {
 
     userGroup := router.Group("/user")
     {
         userGroup.POST("/", createUserCtrl.Save)
         userGroup.POST("/login", loginUserCtrl.Login)
+        userGroup.POST("/saveNotification",saveNotification.Execute)
         
         userGroup.Use(middlewares.AuthMiddleware())
         {
             userGroup.GET("/", getAllUsersCtrl.GetAll)
             userGroup.PUT("/updateStatus", updateStatusCtrl.UpdateStatus)
             userGroup.DELETE("/:id", deleteUserCtrl.Delete)
+            userGroup.GET("/getNotifications",getNotification.Execute)
         }
     }
 }

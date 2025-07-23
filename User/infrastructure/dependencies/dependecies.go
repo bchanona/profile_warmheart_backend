@@ -11,13 +11,15 @@ import (
 )
 
 var (
-	createUserUseCase   *application.SaveUserUseCase
-	loginUserUseCase    *application.LoginUserUseCase
-	getAllUsersUseCase  *application.GetAllUsersUseCase
-	getUserByIDUseCase  *application.GetByIDUserUseCase
-	updateStatusUseCase *application.UpdateStatusUseCase
-	deleteUserUseCase   *application.DeleteUserUseCase
-	jwtKey              []byte
+	createUserUseCase       *application.SaveUserUseCase
+	loginUserUseCase        *application.LoginUserUseCase
+	getAllUsersUseCase      *application.GetAllUsersUseCase
+	getUserByIDUseCase      *application.GetByIDUserUseCase
+	updateStatusUseCase     *application.UpdateStatusUseCase
+	deleteUserUseCase       *application.DeleteUserUseCase
+	saveNotificationUseCase *application.SaveNotificationUseCase
+	getNotificationUseCase  *application.GetNotificationUseCase
+	jwtKey                  []byte
 )
 
 func Init() {
@@ -34,6 +36,8 @@ func Init() {
 	getUserByIDUseCase = application.NewGetByIDUserUseCase(userRepo)
 	updateStatusUseCase = application.NewUpdateStatusUseCase(userRepo)
 	deleteUserUseCase = application.NewDeleteUserUseCase(userRepo)
+	saveNotificationUseCase = application.NewSaveNotificationUseCase(userRepo)
+	getNotificationUseCase = application.NewGetNotificationUseCase(userRepo)
 
 	// Load JWT key
 	jwtKey = []byte(os.Getenv("JWT_SECRET_KEY"))
@@ -65,7 +69,16 @@ func UpdateStatusController() *controllers.UpdateStatusController {
 func DeleteUserController() *controllers.DeleteUserController {
 	return controllers.NewDeleteUserController(deleteUserUseCase)
 }
+func GetSaveNotificationController() *controllers.SaveNotificationController {
+	return controllers.NewSaveNotificationController(saveNotificationUseCase)
+}
+
+func GetNotificationController() *controllers.GetNotificationController {
+	return controllers.NewGetNotificationController(getNotificationUseCase)
+}
 
 func GetJWTKey() []byte {
 	return jwtKey
 }
+
+
