@@ -3,14 +3,14 @@ package main
 import (
 	supervisor "github.com/bchanona/profile_warmheart_backend/Supervisor/infrastructure/Dependences"
 	routeSupervisor "github.com/bchanona/profile_warmheart_backend/Supervisor/infrastructure/Routes"
-
+	"github.com/bchanona/profile_warmheart_backend/User/infrastructure/adapters"
 	user "github.com/bchanona/profile_warmheart_backend/User/infrastructure/dependencies"
 	"github.com/bchanona/profile_warmheart_backend/User/infrastructure/routes"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	
+	adapters.InitMQTT()
 	user.Init()
 	supervisor.Init()
 	defer supervisor.CloseDB()
