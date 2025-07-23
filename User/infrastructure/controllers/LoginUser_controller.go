@@ -1,12 +1,14 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/bchanona/profile_warmheart_backend/User/application"
 	"github.com/bchanona/profile_warmheart_backend/User/domain"
+	"github.com/bchanona/profile_warmheart_backend/User/infrastructure/adapters"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
@@ -51,6 +53,13 @@ func (ctrl *LoginUserController) Login(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return
+	}
+
+	// Publicar datos por MQTT
+	err = adapters.PublishUserData(user.User_id, user.Device_id)
+	if err != nil {
+		fmt.Println("Error al publicar datos a MQTT:", err)
+		// Aquí solo se muestra el error, pero no detenemos el flujo
 	}
 
 	response := domain.LoginResponse{

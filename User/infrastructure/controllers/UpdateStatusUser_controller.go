@@ -9,32 +9,43 @@ import (
 )
 
 type UpdateStatusController struct {
-    UseCase *application.UpdateStatusUseCase
+	UseCase *application.UpdateStatusUseCase
 }
 
 func NewUpdateStatusController(useCase *application.UpdateStatusUseCase) *UpdateStatusController {
-    return &UpdateStatusController{UseCase: useCase}
+	return &UpdateStatusController{UseCase: useCase}
 }
 
 func (ctrl *UpdateStatusController) UpdateStatus(c *gin.Context) {
-    var request struct {
-        UserID  int  `json:"user_id"`
-        Premium bool `json:"premium"`
-    }
+	var request struct {
+		Premium bool `json:"premium"`
+	}
 
-    if err := c.ShouldBindJSON(&request); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-    if err := ctrl.UseCase.UpdateStatus(request.UserID, request.Premium); err != nil {
-        if err == domain.ErrUserNotFound {
-            c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-            return
-        }
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
+	userIDRaw, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token inválido o faltante"})
+		return
+	}
 
-    c.JSON(http.StatusOK, gin.H{"message": "User status updated successfully"})
+	userID, ok := userIDRaw.(int)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No se pudo interpretar el user_id"})
+		return
+	}
+
+	if err := ctrl.UseCase.UpdateStatus(userID, request.Premium); err != nil {
+		if err == domain.ErrUserNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User status updated successfully"})
 }
