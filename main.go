@@ -36,6 +36,8 @@ func main() {
 		user.GetUserByIDController(),
 		user.UpdateStatusController(),
 		user.DeleteUserController(),
+		user.GetSaveNotificationController(),
+		user.GetNotificationController(),
 		user.GetJWTKey(),
 	)
 	routeSupervisor.Routes(r)

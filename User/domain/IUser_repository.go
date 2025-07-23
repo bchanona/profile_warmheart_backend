@@ -16,4 +16,6 @@ type UserRepository interface {
     GetAll() ([]User, error)
     UpdateStatus(id int, premium bool) error
     Delete(id int) error
+    SaveNotification(notification SaveNotifications)error
+    GetNotification(user_id int)([]GetNotifications, error)
 }
