@@ -4,6 +4,8 @@ import (
 	"github.com/bchanona/profile_warmheart_backend/User/infrastructure/controllers"
 	"github.com/bchanona/profile_warmheart_backend/middlewares"
 	"github.com/gin-gonic/gin"
+	"os"
+	"fmt"
 )
 
 func SetupUserRoutes(router *gin.Engine, createUserCtrl *controllers.SaveUserController,
@@ -11,6 +13,17 @@ func SetupUserRoutes(router *gin.Engine, createUserCtrl *controllers.SaveUserCon
 	getByIDUserCtrl *controllers.GetByIDUserController, updateStatusCtrl *controllers.UpdateStatusController,
 	deleteUserCtrl *controllers.DeleteUserController, saveNotification *controllers.SaveNotificationController,
 	getNotification *controllers.GetNotificationController, jwtKey []byte) {
+
+	router.GET("/", func(c *gin.Context) {
+    serverName := os.Getenv("SERVER_NAME")
+    if serverName == "" {
+        serverName = "NombreServidorNoDefinido"
+    }
+
+    c.JSON(200, gin.H{
+        "message": fmt.Sprintf("Ejecutando servidor %s", serverName),
+    })
+})
 
 	userGroup := router.Group("/user")
 	{
